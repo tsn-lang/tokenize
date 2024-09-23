@@ -361,7 +361,7 @@ void testMixedTokens() {
     }
 }
 
-TEST_CASE("Test TokenSet", "[parser]") {
+TEST_CASE("Test TokenSet", "[tokenize]") {
     SECTION("Basic String Tokens") { testBasicStringTokens(); }
     SECTION("Regex Tokens") { testRegexTokens(); }
     SECTION("Mixed Strings and Regex Tokens") { testMixedTokens(); }

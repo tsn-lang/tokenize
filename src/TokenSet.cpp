@@ -133,7 +133,7 @@ namespace tokenize {
                     }
                 }
 
-                if (strcmp(input, tok.end) == 0) {
+                if (strncmp(input, tok.end, tok.endLen) == 0) {
                     if (didEscape) {
                         input += tok.endLen;
                         continue;
@@ -278,12 +278,35 @@ namespace tokenize {
         }
 
         if (following[idx]->strTokenIndex != -1) {
+            bool curIsWord = isalpha(*str) || *str == '_';
+            bool nextIsWord = isalpha(nextCh) || nextCh == '_';
             // see if we're at a token boundary
-            if ((isalpha(*str) || *str == '_') != (isalpha(nextCh) || nextCh == '_')) {
+            if (curIsWord != nextIsWord) {
+                // yes
                 return following[idx]->strTokenIndex;
             }
 
-            if ((*str >= '0' && *str <= '9') != (nextCh >= '0' && nextCh <= '9')) {
+            bool curIsNum = (*str >= '0' && *str <= '9');
+            bool nextIsNum = (nextCh >= '0' && nextCh <= '9');
+            if (curIsNum != nextIsNum) {
+                // yes
+                return following[idx]->strTokenIndex;
+            }
+
+            if (!curIsWord && !nextIsWord && !curIsNum && !nextIsNum) {
+                // maybe?
+                if (following[idx]->following.size() == 0) {
+                    // nothing else to match with, everything up to now matched
+                    return following[idx]->strTokenIndex;
+                }
+
+                i32 matchIdx = following[idx]->findMatch(str + 1);
+                if (matchIdx != -1) {
+                    // there was more to match with
+                    return matchIdx;
+                }
+
+                // nothing else matched, everything up to now matched
                 return following[idx]->strTokenIndex;
             }
         }

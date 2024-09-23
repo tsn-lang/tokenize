@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="tokenize::Token">
+        <DisplayString Condition="source != 0">
+            {type,en} {source->m_contents + location.startBufferPosition,[location.endBufferPosition - location.startBufferPosition]s} 
+        </DisplayString>
+        <DisplayString Condition="source == 0">Invalid Token</DisplayString>
+    </Type>
 </AutoVisualizer>
