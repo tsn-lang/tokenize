@@ -6,9 +6,7 @@
 #include <utils/Array.hpp>
 
 namespace tokenize {
-    constexpr u32 TOKEN_POOL_SIZE = 512;
-
-    TokenizedSource::TokenizedSource() : m_src(nullptr) {
+    TokenizedSource::TokenizedSource() : m_src(nullptr), m_pool(sizeof(Token), 512, true) {
     }
 
     TokenizedSource::~TokenizedSource() {
@@ -17,7 +15,6 @@ namespace tokenize {
 
     void TokenizedSource::init(Resource* src, TokenSet* tokenSet) {
         if (m_src) reset();
-        createNewPool();
         m_src = src;
 
         const char* inputBegin = src->getContents();
@@ -28,7 +25,7 @@ namespace tokenize {
             u32 beginOffset = u32(input - inputBegin);
 
             if (*input == 0) {
-                Token* eoi = getNewToken();
+                Token* eoi = (Token*)m_pool.alloc();
                 eoi->location.resourceId = src->getResourceId();
                 eoi->source = src;
                 eoi->subType = -1;
@@ -60,7 +57,7 @@ namespace tokenize {
             
             u32 endOffset = beginOffset + mt.length;
 
-            Token* tok = getNewToken();
+            Token* tok = (Token*)m_pool.alloc();
             tok->location = src->calculateSourceLocationFromRange(beginOffset, endOffset);
             tok->source = src;
             tok->type = mt.type;
@@ -78,7 +75,7 @@ namespace tokenize {
             input += mt.length;
         }
 
-        Token* eoi = getNewToken();
+        Token* eoi = (Token*)m_pool.alloc();
         eoi->location.resourceId = src->getResourceId();
         eoi->source = m_src;
         eoi->subType = -1;
@@ -91,12 +88,7 @@ namespace tokenize {
         if (!m_src) return;
         m_src = nullptr;
         m_tokens.clear(true);
-
-        for (u32 i = 0;i < m_pools.size();i++) {
-            delete [] m_pools[i].mem;
-        }
-
-        m_pools.clear(true);
+        m_pool.reset();
     }
 
     Resource* TokenizedSource::getSource() const {
@@ -105,28 +97,5 @@ namespace tokenize {
 
     const Array<Token*>& TokenizedSource::getTokens() const {
         return m_tokens;
-    }
-    
-    void TokenizedSource::createNewPool() {
-        m_pools.push({
-            new u8[sizeof(Token) * TOKEN_POOL_SIZE],
-            0,
-            TOKEN_POOL_SIZE
-        });
-
-        memset(m_pools.last().mem, 0, sizeof(Token) * TOKEN_POOL_SIZE);
-    }
-
-    Token* TokenizedSource::getNewToken() {
-        if (!m_src) return nullptr;
-        TokenPool* lastPool = &m_pools.last();
-
-        if (lastPool->used == lastPool->capacity) {
-            createNewPool();
-            lastPool = &m_pools.last();
-        }
-
-        Token& tok = ((Token*)lastPool->mem)[lastPool->used++];
-        return &tok;
     }
 };

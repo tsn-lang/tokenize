@@ -1,6 +1,7 @@
 #pragma once
 #include <tokenize/types.h>
 #include <utils/Array.h>
+#include <utils/MemoryPool.h>
 
 namespace tokenize {
     class Resource;
@@ -19,17 +20,8 @@ namespace tokenize {
             const Array<Token*>& getTokens() const;
         
         protected:
-            void createNewPool();
-            Token* getNewToken();
-
-            struct TokenPool {
-                u8* mem;
-                u32 used;
-                u32 capacity;
-            };
-
             Resource* m_src;
+            MemoryPool m_pool;
             Array<Token*> m_tokens;
-            Array<TokenPool> m_pools;
     };
 };
