@@ -207,7 +207,7 @@ TEST_CASE("Test Resource methods", "[tokenize]") {
     SECTION("tokenize throws a SourceException when an unterminated ranged token is found") {
         Resource src("'abc", 0);
         TokenSet ts;
-        ts.addStringToken("'", "'", "\\", TokenType::StringLiteral);
+        ts.addStringToken("'", "'", "\\", TokenType::Literal);
 
         REQUIRE_THROWS_AS(src.tokenize(&ts), SourceException);
 
@@ -229,7 +229,7 @@ TEST_CASE("Test Resource methods", "[tokenize]") {
     SECTION("tokenize throws a SourceException when an unrecognized token is found") {
         Resource src("'abc' test", 0);
         TokenSet ts;
-        ts.addStringToken("'", "'", "\\", TokenType::StringLiteral);
+        ts.addStringToken("'", "'", "\\", TokenType::Literal);
 
         REQUIRE_THROWS_AS(src.tokenize(&ts), SourceException);
 

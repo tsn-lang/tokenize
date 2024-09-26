@@ -113,7 +113,7 @@ void testBasicStringTokens() {
 
     SECTION("Matches ranged tokens") {
         TokenSet ts;
-        ts.addStringToken("'", "'", "\\", TokenType::StringLiteral);
+        ts.addStringToken("'", "'", "\\", TokenType::Literal);
 
         MatchedToken mt;
         
@@ -123,12 +123,12 @@ void testBasicStringTokens() {
         REQUIRE(mt.subType == -1);
         REQUIRE(mt.contentBeginOffset == 2);
         REQUIRE(mt.contentEndOffset == 9);
-        REQUIRE(mt.type == TokenType::StringLiteral);
+        REQUIRE(mt.type == TokenType::Literal);
     }
 
     SECTION("Matches ranged token escape characters") {
         TokenSet ts;
-        ts.addStringToken("'", "'", "\\$", TokenType::StringLiteral);
+        ts.addStringToken("'", "'", "\\$", TokenType::Literal);
 
         MatchedToken mt;
         
@@ -138,12 +138,12 @@ void testBasicStringTokens() {
         REQUIRE(mt.subType == -1);
         REQUIRE(mt.contentBeginOffset == 2);
         REQUIRE(mt.contentEndOffset == 12);
-        REQUIRE(mt.type == TokenType::StringLiteral);
+        REQUIRE(mt.type == TokenType::Literal);
     }
 
     SECTION("Unterminated ranged token") {
         TokenSet ts;
-        ts.addStringToken("'", "'", "\\", TokenType::StringLiteral);
+        ts.addStringToken("'", "'", "\\", TokenType::Literal);
 
         MatchedToken mt;
         
@@ -153,7 +153,7 @@ void testBasicStringTokens() {
         REQUIRE(mt.subType == -1);
         REQUIRE(mt.contentBeginOffset == 2);
         REQUIRE(mt.contentEndOffset == 11);
-        REQUIRE(mt.type == TokenType::StringLiteral);
+        REQUIRE(mt.type == TokenType::Literal);
     }
 }
 
@@ -216,10 +216,10 @@ void testRegexTokens() {
         constexpr u32 FLT_TP = 2;
         constexpr u32 DBL_TP = 3;
 
-        ts.addRegexToken("-?\\d+(?:(?:(?:\\.\\d*)?(?:[eE][+\\-]?\\d+))|(?:\\.\\d*))f", TokenType::NumberLiteral, FLT_TP);
-        ts.addRegexToken("-?\\d+(?:(?:(?:\\.\\d*)?(?:[eE][+\\-]?\\d+))|(?:\\.\\d*))", TokenType::NumberLiteral, DBL_TP);
-        ts.addRegexToken("-?\\d+u", TokenType::NumberLiteral, UINT_TP);
-        ts.addRegexToken("-?\\d+", TokenType::NumberLiteral, INT_TP);
+        ts.addRegexToken("-?\\d+(?:(?:(?:\\.\\d*)?(?:[eE][+\\-]?\\d+))|(?:\\.\\d*))f", TokenType::Literal, FLT_TP);
+        ts.addRegexToken("-?\\d+(?:(?:(?:\\.\\d*)?(?:[eE][+\\-]?\\d+))|(?:\\.\\d*))", TokenType::Literal, DBL_TP);
+        ts.addRegexToken("-?\\d+u", TokenType::Literal, UINT_TP);
+        ts.addRegexToken("-?\\d+", TokenType::Literal, INT_TP);
         
         MatchedToken mt;
         REQUIRE(ts.match("test_str", &mt) == MatchResult::Matched);
@@ -232,25 +232,25 @@ void testRegexTokens() {
         REQUIRE(mt.offset == 0);
         REQUIRE(mt.length == 2);
         REQUIRE(mt.subType == INT_TP);
-        REQUIRE(mt.type == TokenType::NumberLiteral);
+        REQUIRE(mt.type == TokenType::Literal);
 
         REQUIRE(ts.match("123u", &mt) == MatchResult::Matched);
         REQUIRE(mt.offset == 0);
         REQUIRE(mt.length == 4);
         REQUIRE(mt.subType == UINT_TP);
-        REQUIRE(mt.type == TokenType::NumberLiteral);
+        REQUIRE(mt.type == TokenType::Literal);
 
         REQUIRE(ts.match("1.0", &mt) == MatchResult::Matched);
         REQUIRE(mt.offset == 0);
         REQUIRE(mt.length == 3);
         REQUIRE(mt.subType == DBL_TP);
-        REQUIRE(mt.type == TokenType::NumberLiteral);
+        REQUIRE(mt.type == TokenType::Literal);
 
         REQUIRE(ts.match("4.0f", &mt) == MatchResult::Matched);
         REQUIRE(mt.offset == 0);
         REQUIRE(mt.length == 4);
         REQUIRE(mt.subType == FLT_TP);
-        REQUIRE(mt.type == TokenType::NumberLiteral);
+        REQUIRE(mt.type == TokenType::Literal);
     }
 
     SECTION("Ignores whitespace") {
