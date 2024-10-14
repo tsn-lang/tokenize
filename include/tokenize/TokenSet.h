@@ -47,11 +47,13 @@ namespace tokenize {
             void addStringToken(const char* beginMatchString, const char* endMatchString, const char* escapeChars, TokenType type, i32 subType = -1);
             void addRegexToken(const char* matchString, TokenType type, i32 subType = -1);
             void addRegexToken(const char* beginMatchString, const char* endMatchString, TokenType type, i32 subType = -1);
+            void addCustomToken(MatchResult (*matchFunc)(const char* input, MatchedToken* outMatch));
             
             MatchResult match(const char* input, MatchedToken* outMatch);
 
         protected:
             MatchResult matchBasic(const char* input, MatchedToken* outMatch);
+            MatchResult matchCustom(const char* input, MatchedToken* outMatch);
             MatchResult matchRegex(const char* input, MatchedToken* outMatch);
 
             struct SearchNode {
@@ -72,5 +74,6 @@ namespace tokenize {
             SearchNode* m_strSearchTree;
             Array<StringTokenMatcher> m_stringTokens;
             Array<RegexTokenMatcher> m_regexTokens;
+            Array<MatchResult (*)(const char* input, MatchedToken* outMatch)> m_customTokens;
     };
 };

@@ -45,11 +45,6 @@ namespace tokenize {
     }
 
     void TokenSet::addRegexToken(const char* matchString, TokenType type, i32 subType) {
-        if (m_strSearchTree) {
-            delete m_strSearchTree;
-            m_strSearchTree = nullptr;
-        }
-
         std::string beginTok = matchString;
         if (beginTok[0] != '^') beginTok = "^" + beginTok;
 
@@ -63,11 +58,6 @@ namespace tokenize {
     }
 
     void TokenSet::addRegexToken(const char* beginMatchString, const char* endMatchString, TokenType type, i32 subType) {
-        if (m_strSearchTree) {
-            delete m_strSearchTree;
-            m_strSearchTree = nullptr;
-        }
-
         std::string beginTok = beginMatchString;
         if (beginTok[0] != '^') beginTok = "^" + beginTok;
 
@@ -78,6 +68,10 @@ namespace tokenize {
             std::regex(endMatchString),
             true
         });
+    }
+
+    void TokenSet::addCustomToken(MatchResult (*matchFunc)(const char* input, MatchedToken* outMatch)) {
+        m_customTokens.push(matchFunc);
     }
 
     MatchResult TokenSet::match(const char* input, MatchedToken* outMatch) {
@@ -93,6 +87,7 @@ namespace tokenize {
 
         MatchResult result = MatchResult::NoMatch;
         result = matchBasic(input, outMatch);
+        if (result == MatchResult::NoMatch) result = matchCustom(input, outMatch);
         if (result == MatchResult::NoMatch) result = matchRegex(input, outMatch);
 
         if (result != MatchResult::NoMatch) {
@@ -102,6 +97,15 @@ namespace tokenize {
         }
 
         return result;
+    }
+
+    MatchResult TokenSet::matchCustom(const char* input, MatchedToken* outMatch) {
+        for (u32 i = 0;i < m_customTokens.size();i++) {
+            MatchResult r = m_customTokens[i](input, outMatch);
+            if (r != MatchResult::NoMatch) return r;
+        }
+
+        return MatchResult::NoMatch;
     }
 
     MatchResult TokenSet::matchBasic(const char* input, MatchedToken* outMatch) {
