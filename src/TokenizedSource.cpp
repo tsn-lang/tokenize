@@ -6,7 +6,7 @@
 #include <utils/Array.hpp>
 
 namespace tokenize {
-    TokenizedSource::TokenizedSource() : m_src(nullptr), m_pool(sizeof(Token), 512, true) {
+    TokenizedSource::TokenizedSource() : m_src(nullptr), m_tokenSet(nullptr), m_pool(sizeof(Token), 512, true) {
     }
 
     TokenizedSource::~TokenizedSource() {
@@ -16,6 +16,7 @@ namespace tokenize {
     void TokenizedSource::init(Resource* src, TokenSet* tokenSet) {
         if (m_src) reset();
         m_src = src;
+        m_tokenSet = tokenSet;
 
         const char* inputBegin = src->getContents();
         const char* input = inputBegin;

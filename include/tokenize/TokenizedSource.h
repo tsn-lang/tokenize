@@ -17,10 +17,12 @@ namespace tokenize {
             void reset();
 
             Resource* getSource() const;
+            TokenSet* getTokenSet() const;
             const Array<Token*>& getTokens() const;
         
         protected:
             Resource* m_src;
+            TokenSet* m_tokenSet;
             MemoryPool m_pool;
             Array<Token*> m_tokens;
     };
