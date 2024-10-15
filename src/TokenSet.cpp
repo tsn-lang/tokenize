@@ -46,7 +46,7 @@ namespace tokenize {
 
     void TokenSet::addRegexToken(const char* matchString, TokenType type, i32 subType) {
         std::string beginTok = matchString;
-        if (beginTok[0] != '^') beginTok = "^" + beginTok;
+        if (beginTok[0] != '^') beginTok = "^(?:" + beginTok + ")";
 
         m_regexTokens.push({
             type,
