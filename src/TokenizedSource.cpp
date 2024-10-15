@@ -96,6 +96,10 @@ namespace tokenize {
         return m_src;
     }
 
+    TokenSet* TokenizedSource::getTokenSet() const {
+        return m_tokenSet;
+    }
+
     const Array<Token*>& TokenizedSource::getTokens() const {
         return m_tokens;
     }
