@@ -183,7 +183,7 @@ namespace tokenize {
 
         for (u32 i = 0;i < m_regexTokens.size();i++) {
             RegexTokenMatcher& tok = m_regexTokens[i];
-            if (!std::regex_search(input, match, tok.begin)) continue;
+            if (!std::regex_search(input, match, tok.begin, std::regex_constants::match_continuous)) continue;
 
             u32 beginPos = u32(match.position());
             u32 beginLen = u32(match.length());
