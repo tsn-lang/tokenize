@@ -35,14 +35,14 @@ add_sources("src"            ".")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+if (NOT TARGET utils)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps/utils)
+endif()
+
 include_directories(
     ${TSN_TOKENIZE_INCLUDE_DIR}
     ${TSN_UTILS_INCLUDE_DIR}
 )
-
-if (NOT TARGET utils)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps/utils)
-endif()
 
 add_library(tokenize ${all_sources})
 target_link_libraries(tokenize utils)
