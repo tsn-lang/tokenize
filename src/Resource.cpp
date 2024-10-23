@@ -6,7 +6,7 @@
 namespace tokenize {
     Resource::Resource(const char* contents, u32 resourceId) {
         m_resourceId = resourceId;
-        m_length = strlen(contents);
+        m_length = u32(strlen(contents));
         m_contents = nullptr;
 
         if (m_length > 0) {
