@@ -22,7 +22,7 @@ namespace tokenize {
             matchString,
             nullptr,
             nullptr,
-            strlen(matchString),
+            u32(strlen(matchString)),
             0
         });
     }
@@ -39,8 +39,8 @@ namespace tokenize {
             beginMatchString,
             endMatchString,
             escapeChars,
-            strlen(beginMatchString),
-            strlen(endMatchString)
+            u32(strlen(beginMatchString)),
+            u32(strlen(endMatchString))
         });
     }
 
